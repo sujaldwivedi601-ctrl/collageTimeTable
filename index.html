@@ -1,207 +1,172 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>School Timetable Generator</title>
+    <title>Smart Timetable Generator</title>
+    <style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #4e73df, #ffffff);
+    text-align: center;
+}
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #ecf0f1;
-    }
+/* Heading */
+h2 {
+    margin-top: 40px;
+    color: white;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
 
-    .container {
-      width: 90%;
-      max-width: 1100px;
-      margin: 50px auto 20px auto;
-      background: #1c2833;
-      padding: 35px 45px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    }
+/* Input Section Box */
+.inputSection {
+    background: white;
+    width: 500px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
 
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+/* Inputs */
+input[type="text"],
+input[type="time"],
+input[type="number"] {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin: 8px 0;
+    width: 80%;
+    transition: 0.3s;
+}
 
-    .header h1 {
-      margin: 0;
-      font-size: 28px;
-      color: #5dade2;
-    }
+input:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 5px rgba(78,115,223,0.5);
+}
 
-    .header p {
-      margin-top: 6px;
-      font-size: 14px;
-      color: #a9cce3;
-    }
+/* Time Label */
+.form-group {
+    margin: 15px 0;
+}
 
-    .form-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 25px;
-    }
+/* Buttons */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background-color: #4e73df;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
+button:hover {
+    background-color: #2e59d9;
+    transform: translateY(-2px);
+}
 
-    .form-group label {
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #aed6f1;
-    }
+/* Subject Cards */
+#subjectSection {
+    margin-top: 20px;
+}
 
-    input {
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #34495e;
-      background: #273746;
-      color: white;
-      font-size: 14px;
-    }
+.subjectCard {
+    background: white;
+    width: 450px;
+    margin: 15px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    text-align: left;
+    transition: 0.3s;
+}
 
-    input:focus {
-      outline: none;
-      border-color: #5dade2;
-      box-shadow: 0 0 6px rgba(93, 173, 226, 0.5);
-    }
+.subjectCard:hover {
+    transform: translateY(-3px);
+}
 
-    .button-group {
-      margin-top: 10px;
-    }
+.subjectCard h3 {
+    margin-bottom: 12px;
+}
 
-    button {
-      padding: 10px 22px;
-      background: #2980b9;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-right: 10px;
-    }
+.optionRow {
+    margin: 8px 0;
+}
 
-    button:hover {
-      background: #3498db;
-      transform: translateY(-2px);
-    }
+/* Generate Button */
+#generateBtn {
+    margin: 25px 0;
+    background-color: #1cc88a;
+}
 
-    .option {
-      margin-top: 25px;
-      padding: 18px;
-      background: #212f3d;
-      border-radius: 8px;
-      border: 1px solid #34495e;
-    }
+#generateBtn:hover {
+    background-color: #17a673;
+}
 
-    .option strong {
-      color: #5dade2;
-      margin-right: 10px;
-    }
+/* Table Styling */
+table {
+    border-collapse: collapse;
+    width: 95%;
+    margin: 30px auto;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
 
-    /* ===== TABLE OUTSIDE CONTAINER ===== */
+th, td {
+    padding: 12px;
+    text-align: center;
+}
 
-    .table-wrapper {
-      width: 95%;
-      max-width: 1200px;
-      margin: 30px auto 60px auto;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.08); /* semi white glass */
-      border-radius: 12px;
-      backdrop-filter: blur(6px);
-    }
+th {
+    background: #4e73df;
+    color: white;
+    font-weight: 600;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(255, 255, 255, 0.92); /* semi-white */
-      color: #2c3e50;
-      border-radius: 8px;
-      overflow: hidden;
-    }
+tr:nth-child(even) {
+    background-color: #f8f9fc;
+}
 
-    th, td {
-      border: 1px solid #d5d8dc;
-      padding: 12px;
-      text-align: center;
-      font-size: 14px;
-    }
+tr:hover {
+    background-color: #e2e6f9;
+}
 
-    th {
-      background: #1f3c88;
-      color: white;
-      font-weight: 600;
-    }
 
-    tbody tr:nth-child(even) {
-      background: #f2f4f8;
-    }
 
-    tbody tr:hover {
-      background: #e8edf5;
-    }
+    </style>
 
-  </style>
+
 </head>
-
 <body>
 
-  <!-- FORM SECTION -->
-  <div class="container">
+<h2>Weekly Timetable Generator</h2>
 
-    <div class="header">
-      <h1>Weekly School Timetable Generator</h1>
-      <p>Teacher Scheduling & Academic Planning</p>
-    </div>
+<div class="inputSection">
+    <input type="text" id="subjectsInput"
+        placeholder="Enter subjects (comma separated)">
 
-    <div class="form-section">
-
-      <div class="form-group">
-        <label>Subjects (comma separated)</label>
-        <input id="subjects" type="text" placeholder="Math, Physics, Chemistry">
-      </div>
-
-      <div class="form-group">
+<div class="form-group">
         <label>Starting Time</label>
         <input id="startTime" type="time">
       </div>
 
-      <div class="form-group">
-        <label>Weekly Theory Hours per Subject</label>
-        <input id="theTime" type="number">
-      </div>
+    <button id="createBtn">Create Subject Options</button>
+</div>
 
-      <div class="form-group">
-        <label>Weekly Practical Hours per Subject</label>
-        <input id="priTime" type="number">
-      </div>
 
-    </div>
+<div id="subjectSection"></div> 
 
-    <div class="button-group">
-      <button id="more">Create Subject Options</button>
-      <button id="generate">Generate Timetable</button>
-    </div>
+<button id="generateBtn">Generate Timetable</button>
 
-    <div class="option"></div>
+<div id="tableContainer"></div>
 
-  </div>
-
-  <!-- TABLE SECTION (OUTSIDE MAIN DIV) -->
-  <div class="table-wrapper">
-    <table id="timeTable">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <script src="js2.js" defer></script>
-
+<script src="techTime.js"></script>
 </body>
 </html>
