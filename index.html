@@ -1,171 +1,61 @@
-<!doctype html>
+
+
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Smart Timetable Generator</title>
-    <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #4e73df, #ffffff);
-        text-align: center;
-      }
+<head>
+    <title>Advanced Timetable Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-      /* Heading */
-      h2 {
-        margin-top: 40px;
-        color: white;
-        font-size: 30px;
-        letter-spacing: 1px;
-      }
+<h1>College Timetable Generator</h1>
 
-      /* Input Section Box */
-      .inputSection {
-        background: white;
-        width: 500px;
-        margin: 30px auto;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      }
+<div class="section">
+    <h2>Add Subject to Class</h2>
 
-      /* Inputs */
-      input[type="text"],
-      input[type="time"],
-      input[type="number"] {
-        padding: 8px 12px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        outline: none;
-        margin: 8px 0;
-        width: 80%;
-        transition: 0.3s;
-      }
+    <select id="subjectClass">
+        <option value="I">SEM 1</option>
+        <option value="III">SEM 3</option>
+        <option value="V">SEM 5</option>
+    </select>
 
-      input:focus {
-        border-color: #4e73df;
-        box-shadow: 0 0 5px rgba(78, 115, 223, 0.5);
-      }
+    <input type="text" id="subjectName" placeholder="Subject Name">
+    <input type="number" id="theoryHours" placeholder="Theory Hours">
+    <input type="number" id="practicalHours" placeholder="Practical Hours">
 
-      /* Time Label */
-      .form-group {
-        margin: 15px 0;
-      }
+    <button id="addSubjectBtn">Add Subject</button>
+    <ul id="subjectList"></ul>
+</div>
 
-      /* Buttons */
-      button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        background-color: #4e73df;
-        color: white;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.3s;
-        margin-top: 10px;
-      }
+<div class="section">
+    <h2>Add Teacher</h2>
+    <input type="text" id="teacherName" placeholder="Teacher Name">
+    <button id="addTeacherBtn">Add Teacher</button>
+    <ul id="teacherList"></ul>
+</div>
 
-      button:hover {
-        background-color: #2e59d9;
-        transform: translateY(-2px);
-      }
+<div class="section">
+    <h2>Assign Teacher</h2>
 
-      /* Subject Cards */
-      #subjectSection {
-        margin-top: 20px;
-      }
+    <select id="assignClass">
+        <option value="I">SEM 1</option>
+        <option value="III">SEM 3</option>
+        <option value="V">SEM 5</option>
+    </select>
 
-      .subjectCard {
-        background: white;
-        width: 450px;
-        margin: 15px auto;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        text-align: left;
-        transition: 0.3s;
-      }
+    <select id="assignSubject"></select>
+    <select id="assignTeacher"></select>
 
-      .subjectCard:hover {
-        transform: translateY(-3px);
-      }
+    <button id="assignTeacherBtn">Assign</button>
+    <ul id="assignmentList"></ul>
+</div>
 
-      .subjectCard h3 {
-        margin-bottom: 12px;
-      }
-
-      .optionRow {
-        margin: 8px 0;
-      }
-
-      /* Generate Button */
-      #generateBtn {
-        margin: 25px 0;
-        background-color: #1cc88a;
-      }
-
-      #generateBtn:hover {
-        background-color: #17a673;
-      }
-
-      /* Table Styling */
-      table {
-        border-collapse: collapse;
-        width: 95%;
-        margin: 30px auto;
-        background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      }
-
-      th,
-      td {
-        padding: 12px;
-        text-align: center;
-      }
-
-      th {
-        background: #4e73df;
-        color: white;
-        font-weight: 600;
-      }
-
-      tr:nth-child(even) {
-        background-color: #f8f9fc;
-      }
-
-      tr:hover {
-        background-color: #e2e6f9;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>Weekly Timetable Generator</h2>
-
-    <div class="inputSection">
-      <input
-        type="text"
-        id="subjectsInput"
-        placeholder="Enter subjects (comma separated)"
-      />
-
-      <div class="form-group">
-        <label>Starting Time</label>
-        <input id="startTime" type="time" />
-      </div>
-
-      <button id="createBtn">Create Subject Options</button>
-    </div>
-
-    <div id="subjectSection"></div>
-
+<div class="section">
     <button id="generateBtn">Generate Timetable</button>
-    <button id="ForET">FORet</button>
+</div>
 
-    <div id="tableContainer"></div>
-  <div id="et">  </div>
+<div id="timetableContainer"></div>
 
-    <script src="techTime.js"></script>
-  </body>
+<script src="mainage.js"></script>
+</body>
 </html>
