@@ -1,5 +1,6 @@
 
 
+
 // -------------------- BASIC SETTINGS --------------------
 
 const classes = ["I", "III", "V"];
@@ -66,12 +67,13 @@ function addSubject() {
   if (!name) return alert("Enter subject name");
 
   classSubjects[className].push({
-    name,
-    total: theory + practical,
-  });
+  name,
+  theory: theory,
+  practical: practical
+});
 
   const li = document.createElement("li");
-  li.textContent = `Class ${className} - ${name} (${theory + practical} hrs)`;
+  li.textContent = `Class ${className} - ${name} (${theory , practical} hrs)`;
   document.getElementById("subjectList").appendChild(li);
 
   updateSubjectDropdown();
@@ -149,70 +151,98 @@ function createEmptyGrid() {
 // -------------------- MAIN GENERATOR --------------------
 
 function generateTimetable() {
+
   let classSchedules = {};
   let teacherSchedules = {};
 
   classes.forEach((c) => (classSchedules[c] = createEmptyGrid()));
   teachers.forEach((t) => (teacherSchedules[t] = createEmptyGrid()));
 
-  assignments.forEach((assign) => {
-    const subjectObj = classSubjects[assign.className].find(
-      (s) => s.name === assign.subject,
-    );
-
-    if (!subjectObj) return;
-
-    let hoursLeft = subjectObj.total;
-
-    while (hoursLeft > 0) {
-      let placed = false;
-
-      // Shuffle days for better distribution
-      let shuffledDays = shuffle([...Array(days).keys()]);
-
-      for (let d of shuffledDays) {
-        let shuffledPeriods = shuffle([...Array(periods).keys()]);
-
-        for (let p of shuffledPeriods) {
-          // Skip Lunch Slot (5th period = index 4)
-          if (p === 4) continue;
-
-          if (
-            classSchedules[assign.className][d][p] === null &&
-            teacherSchedules[assign.teacher][d][p] === null
-          ) {
-            classSchedules[assign.className][d][p] =
-              `${assign.subject} (${assign.teacher})`;
-
-            teacherSchedules[assign.teacher][d][p] = assign.className;
-
-            hoursLeft--;
-            placed = true;
-            break;
-          }
-        }
-
-        if (placed) break;
-      }
-
-      if (!placed) {
-        alert("Not enough space without teacher collision.");
-        return;
-      }
-    }
-  });
-
-  // Add Lunch After 4th Period
+  // Add Lunch
   classes.forEach((c) => {
     for (let d = 0; d < days; d++) {
       classSchedules[c][d][4] = "LUNCH";
     }
   });
 
-  displayTimetable(classSchedules);}
+  assignments.forEach((assign) => {
 
-// -------------------- DISPLAY FUNCTION --------------------
+    const original = classSubjects[assign.className].find(
+      (s) => s.name === assign.subject
+    );
 
+    if (!original) return;
+
+    // Clone to avoid permanent mutation
+    let subject = {
+      name: original.name,
+      theory: original.theory,
+      practical: original.practical
+    };
+
+    // Separate lists
+    let theorySubjects = [];
+    let practicalSubjects = [];
+
+    if (subject.theory > 0) theorySubjects.push(subject);
+    if (subject.practical > 0) practicalSubjects.push(subject);
+
+    let theoryCount = 0;
+
+    for (let d = 0; d < days; d++) {
+      for (let p = 0; p < periods; p++) {
+
+        if (p === 4) continue; // skip lunch
+
+        if (
+          classSchedules[assign.className][d][p] === null &&
+          teacherSchedules[assign.teacher][d][p] === null
+        ) {
+
+          // 🔥 FIRST: PRINT 4 THEORY
+          if(theorySubjects.length > 0 && theoryCount < 4) {
+
+            if (subject.theory > 0) {
+
+              classSchedules[assign.className][d][p] =
+                `${subject.name} (Theory)`;
+
+              teacherSchedules[assign.teacher][d][p] =
+                assign.className;
+
+              subject.theory--;
+              theoryCount++;
+
+              if (subject.theory === 0) {
+                theorySubjects = [];
+              }
+
+              continue;
+            }
+          }
+
+          // 🔥 AFTER 4 THEORY → PRINT PRACTICAL
+          if (subject.practical > 0) {
+
+            classSchedules[assign.className][d][p] =
+              `${subject.name} (Practical)`;
+
+            teacherSchedules[assign.teacher][d][p] =
+              assign.className;
+
+            subject.practical--;
+
+            continue;
+          }
+
+        }
+      }
+    }
+
+  });
+
+  displayTimetable(classSchedules);
+}
 function displayTimetable(classSchedules) {
   const container = document.getElementById("timetableContainer");
   container.innerHTML = "";
@@ -345,17 +375,6 @@ function displayTimetable(classSchedules) {
         pIndex++;
       }
 
-
-
-
-
-
-
-
-
-
-
-
       // Pad remaining cells up to total periods
       while (fill < periods) {
         let td = document.createElement("td");
@@ -370,11 +389,8 @@ function displayTimetable(classSchedules) {
     container.appendChild(tableEl);
   });
 }
+ 
 //>>>>>>> REPLACE
-
-
-
-
 
 //   days.forEach((day) => {
 
@@ -428,7 +444,6 @@ function displayTimetable(classSchedules) {
 //   i = (i + 1) % precticalArr.length; // rotate index safely
 // }
 
-
 //    for(let i=fill; fill<7; i++){
 //       let td = document.createElement("td");
 //       td.textContent = "";
@@ -438,13 +453,13 @@ function displayTimetable(classSchedules) {
 
 //     tbody.appendChild(row);
 
-
 //     theoryArr = shuffle(theoryArr);
 //     precticalArr = shuffle(precticalArr) ;
-  
+
 //   });
 
 //   table.appendChild(tbody);
 //   container.appendChild(table);
 
 // }
+
