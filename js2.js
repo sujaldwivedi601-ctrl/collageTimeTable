@@ -1,6 +1,5 @@
 
 
-
 // -------------------- BASIC SETTINGS --------------------
 
 const classes = ["I", "III", "V"];
@@ -67,13 +66,13 @@ function addSubject() {
   if (!name) return alert("Enter subject name");
 
   classSubjects[className].push({
-  name,
-  theory: theory,
-  practical: practical
-});
+    name,
+    theory: theory,
+    practical: practical,
+  });
 
   const li = document.createElement("li");
-  li.textContent = `Class ${className} - ${name} (${theory , practical} hrs)`;
+  li.textContent = `sem ${className} - ${name} (${theory},${practical} hrs)`;
   document.getElementById("subjectList").appendChild(li);
 
   updateSubjectDropdown();
@@ -138,7 +137,7 @@ function assignTeacher() {
   assignments.push({ className, subject, teacher });
 
   const li = document.createElement("li");
-  li.textContent = `Class ${className} - ${subject} -> ${teacher}`;
+  li.textContent = `sem ${className} - ${subject} -> ${teacher}`;
   document.getElementById("assignmentList").appendChild(li);
 }
 
@@ -151,7 +150,6 @@ function createEmptyGrid() {
 // -------------------- MAIN GENERATOR --------------------
 
 function generateTimetable() {
-
   let classSchedules = {};
   let teacherSchedules = {};
 
@@ -166,9 +164,8 @@ function generateTimetable() {
   });
 
   assignments.forEach((assign) => {
-
     const original = classSubjects[assign.className].find(
-      (s) => s.name === assign.subject
+      (s) => s.name === assign.subject,
     );
 
     if (!original) return;
@@ -177,7 +174,7 @@ function generateTimetable() {
     let subject = {
       name: original.name,
       theory: original.theory,
-      practical: original.practical
+      practical: original.practical,
     };
 
     // Separate lists
@@ -191,58 +188,51 @@ function generateTimetable() {
 
     for (let d = 0; d < days; d++) {
       for (let p = 0; p < periods; p++) {
-
         if (p === 4) continue; // skip lunch
 
         if (
           classSchedules[assign.className][d][p] === null &&
           teacherSchedules[assign.teacher][d][p] === null
         ) {
-
           // 🔥 FIRST: PRINT 4 THEORY
-          if(theorySubjects.length > 0 && theoryCount < 4) {
+          if (subject.theory > 0 && theoryCount < 4) {
+            // if () {
 
-            if (subject.theory > 0) {
+            classSchedules[assign.className][d][p] =
+              `${subject.name} (The - ${assign.teacher})`;
 
-              classSchedules[assign.className][d][p] =
-                `${subject.name} (Theory)`;
+            teacherSchedules[assign.teacher][d][p] = assign.className;
 
-              teacherSchedules[assign.teacher][d][p] =
-                assign.className;
+            subject.theory--;
+            theoryCount++;
 
-              subject.theory--;
-              theoryCount++;
+            // if (subject.theory === 0) {
+            //   theorySubjects = [];
+            // }
 
-              if (subject.theory === 0) {
-                theorySubjects = [];
-              }
-
-              continue;
-            }
+            continue;
+            // }
           }
 
           // 🔥 AFTER 4 THEORY → PRINT PRACTICAL
           if (subject.practical > 0) {
-
             classSchedules[assign.className][d][p] =
               `${subject.name} (Practical)`;
 
-            teacherSchedules[assign.teacher][d][p] =
-              assign.className;
+            teacherSchedules[assign.teacher][d][p] = assign.className;
 
             subject.practical--;
 
             continue;
           }
-
         }
       }
     }
-
   });
 
   displayTimetable(classSchedules);
 }
+
 function displayTimetable(classSchedules) {
   const container = document.getElementById("timetableContainer");
   container.innerHTML = "";
@@ -367,99 +357,22 @@ function displayTimetable(classSchedules) {
           continue; // original lunch cell
         }
 
-        const val = dayRow[pIndex];
-        let td = document.createElement("td");
-        td.textContent = val && val !== "LUNCH" ? val : "";
-        row.appendChild(td);
-        fill++;
-        pIndex++;
-      }
+        // Pad remaining cells up to total periods
+        while (fill < periods) {
+          let td = document.createElement("td");
+          td.textContent = "";
+          row.appendChild(td);
+          fill++;
+        }
 
-      // Pad remaining cells up to total periods
-      while (fill < periods) {
-        let td = document.createElement("td");
-        td.textContent = "";
-        row.appendChild(td);
-        fill++;
+        tbody.appendChild(row);
       }
-
-      tbody.appendChild(row);
     });
 
     container.appendChild(tableEl);
   });
 }
- 
+
 //>>>>>>> REPLACE
 
-//   days.forEach((day) => {
-
-//     let row = document.createElement("tr");
-//     let td = document.createElement("td");
-//     td.textContent = day;
-//     row.appendChild(td);
-
-//     let fill = 0;
-//     theoryArr.forEach((subj) => {
-//       if (subj.Hh && fill<4 ) {
-//         let td = document.createElement("td");
-//         td.textContent = subj.name;
-//         row.appendChild(td);
-//         subj.Hh--;0
-//         fill++;
-//       }
-//     });
-
-// if (fill == 4) {
-//     let tdo = document.createElement("td");
-//         tdo.textContent = "lunch";
-//         row.appendChild(tdo);
-//         fill++ ;
-// }
-//   let i = 0;
-// while (fill <= 6) {
-
-//   if (fill == 4) {
-//     let tdo = document.createElement("td");
-//         tdo.textContent = "lunch";
-//         row.appendChild(tdo);
-//         fill++;
-// }
-
-//   // Check if any practical subject still has hours
-//   let available = precticalArr.some(pri => pri.Hh > 0);
-//   if (!available) {
-//     break; // no more practical hours left
-//   }
-
-//   let pri = precticalArr[i];
-//   if (pri.Hh > 0) {
-//     let td = document.createElement("td");
-//     td.textContent = pri.name + "(p)";
-//     row.appendChild(td);
-
-//     pri.Hh--;
-//     fill++;
-//   }
-//   i = (i + 1) % precticalArr.length; // rotate index safely
-// }
-
-//    for(let i=fill; fill<7; i++){
-//       let td = document.createElement("td");
-//       td.textContent = "";
-//       row.appendChild(td);
-//       fill++;
-//    }
-
-//     tbody.appendChild(row);
-
-//     theoryArr = shuffle(theoryArr);
-//     precticalArr = shuffle(precticalArr) ;
-
-//   });
-
-//   table.appendChild(tbody);
-//   container.appendChild(table);
-
-// }
 
